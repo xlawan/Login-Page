@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Accounts</title>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    </head>
+    <body>    
+        <div class = "w3-bar w3-blue">
+            <div class="w3-left" style="margin-left: 20px; margin-top: 10px;">
+                <h3>USER MANAGEMENT</h3>
+            </div>
+            <div class = "w3-bar-item w3-right">
+                <button class ="w3-button w3-right w3-red w3-round-large" onclick="logout()" style="margin-left: 10px;">LOG-OUT</button>
+                <button class="w3-button w3-right w3-black w3-round-large" onclick="document.getElementById('registrationModal').style.display='block'">ADD Student</button>
+            </div>
+        </div>
+        <div class="w3-center">
+            <button class="w3-button w3-indigo" onclick="showStudentTable()">Show Students Table</button>
+            <button class="w3-button w3-green" onclick="showUserTable()">Show Users Table</button>
+            <button class="w3-button w3-pink" onclick="showAllTable()">Show All Table</button>
+        </div>
+        <main ng-app="app" ng-controller="index">
+            <div id="studentTable" style="display:block;">
+                <table class="w3-table-all">
+                    <thead>
+                        <tr class="w3-blue">
+                            <th ng-repeat="h in header" class="w3-center">{{ h | uppercase }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="x in users">
+                            <td class="w3-center">{{ x.idno }}</td>
+                            <td class="w3-center">{{ x.lastname }}</td>
+                            <td class="w3-center">{{ x.firstname }}</td>
+                            <td class="w3-center">{{ x.course }}</td>
+                            <td class="w3-center">{{ x.level }}</td>
+                            <td class="w3-center">
+                                <button type="submit" class="w3-button w3-yellow w3-round-large" ng-click="showData(x.idno, x.lastname, x.firstname, x.course, x.level)" onclick="document.getElementById('editModal').style.display='block'">&#9998;</button>
+                                &emsp;
+                                <button type="submit" class="w3-button w3-red w3-round-large" ng-click="delete(x.idno)">&#10007;</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+
+        <!--Add Student modal-->
+        <div class="w3-modal" id="registrationModal">
+            <div class="w3-modal-content w3-animate-top" style="width:400px">
+                <div class="w3-container w3-blue">
+                    <span class="w3-button w3-display-topright" onclick="document.getElementById('registrationModal').style.display='none'">&times;</span>
+                    <h3>Add New Student</h3>
+                </div>
+                <div class="w3-container w3-padding-16">
+                        <label for = "idno">ID</label>
+                        <input type ="number" id ="idno" class = "w3-input w3-border" ng-model="idno" placeholder="Not required">
+                        <label for = "lastname">LASTNAME</label>
+                        <input type ="text" id ="lastname" class = "w3-input w3-border" ng-model="lastname">
+                        <label for = "firstname">FIRSTNAME</label>
+                        <input type ="text" id ="firstname" class = "w3-input w3-border" ng-model="firstname">
+                        <label for = "course">COURSE</label>
+                        <input type ="text" id ="course" class = "w3-input w3-border" ng-model="course">
+                        <label for = "level">LEVEL</label>
+                        <input type ="text" id ="level" class = "w3-input w3-border" ng-model="level">
+                    <br>
+                    <button class="w3-center w3-button w3-blue" ng-click="addStudent()">Add Student</button>
+                </div>
+            </div>
+        </div>
+        <!--Edit Student modal-->
+        <div class="w3-modal" id="editModal">
+            <div class="w3-modal-content w3-animate-top" style="width:400px">
+                <div class="w3-container w3-blue">
+                    <span class="w3-button w3-display-topright" onclick="document.getElementById('editModal').style.display='none'">&times;</span>
+                    <h3>Edit Student</h3>
+                </div>
+                <div class="w3-container w3-padding-16">
+                        <label for = "idno">ID</label>
+                        <input type ="number" name="idno" id ="idno" class = "w3-input w3-border" ng-model="idno" readonly>
+                        <label for = "lastname">LASTNAME</label>
+                        <input type ="text" id ="lastname" class = "w3-input w3-border" ng-model="lastname">
+                        <label for = "firstname">FIRSTNAME</label>
+                        <input type ="text" id ="firstname" class = "w3-input w3-border" ng-model="firstname">
+                        <label for = "course">COURSE</label>
+                        <input type ="text" id ="course" class = "w3-input w3-border" ng-model="course">
+                        <label for = "level">LEVEL</label>
+                        <input type ="text" id ="level" class = "w3-input w3-border" ng-model="level">
+                    <br>
+                    <button class="w3-right w3-button w3-blue" ng-click="update()">Update</button>
+                </div>
+            </div>
+        </div>
+        </main>
+    </body>
+    <script src="./assets/index.js"></script>
+    <script>
+        function showStudentTable(){
+            document.getElementById("studentTable").style.display='block';
+            document.getElementById("userTable").style.display='none';
+        }
+        function showUserTable(){
+            document.getElementById("studentTable").style.display='none';
+            document.getElementById("userTable").style.display='block';
+        }
+        function showAllTable(){
+            document.getElementById("studentTable").style.display='block';
+            document.getElementById("studentTable").class='w3-left';
+            document.getElementById("userTable").style.display='block';
+            document.getElementById("userTable").class='w3-right';
+        }
+    </script>
+</html>
+

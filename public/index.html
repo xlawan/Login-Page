@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Accounts</title>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    </head>
+    <body>    
+        <div class = "w3-bar w3-blue">
+            <div class="w3-left" style="margin-left: 20px; margin-top: 10px;">
+                <h3>STUDENT AND USER MANAGEMENT</h3>
+            </div>
+            <div class="w3-bar-item w3-right">
+                <button class ="w3-button w3-right w3-red w3-round-large" onclick="logout()" style="margin-left: 10px;">LOG-OUT</button>
+                <button class="w3-button w3-right w3-green w3-round-large" onclick="document.getElementById('registrationModalUser').style.display='block'; showUserTable()" style="margin-left: 10px;">ADD User</button>
+                <button class="w3-button w3-right w3-indigo w3-round-large" onclick="document.getElementById('registrationModalStudent').style.display='block'; showStudentTable()">ADD Student</button>
+            </div>
+        </div>
+        <div class="w3-center">
+            <button class="w3-button w3-indigo" onclick="showStudentTable()">Show Students Table</button>
+            <button class="w3-button w3-green" onclick="showUserTable()">Show Users Table</button>
+            <button class="w3-button w3-pink" onclick="showAllTable()">Show All Table</button>
+        </div>
+        <div ng-app="app">
+            <div ng-controller="students">
+                <!--Students Table-->
+                <div id="studentTable" style="display:block;">
+                    <table class="w3-table-all">
+                        <thead>
+                            <tr class="w3-blue">
+                                <th ng-repeat="h in header" class="w3-center">{{ h | uppercase }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="x in students">
+                                <td class="w3-center">{{ x.idno }}</td>
+                                <td class="w3-center">{{ x.lastname }}</td>
+                                <td class="w3-center">{{ x.firstname }}</td>
+                                <td class="w3-center">{{ x.course }}</td>
+                                <td class="w3-center">{{ x.level }}</td>
+                                <td class="w3-center">
+                                    <button type="submit" class="w3-button w3-yellow w3-round-large" ng-click="showDataStudent(x.idno, x.lastname, x.firstname, x.course, x.level)" onclick="document.getElementById('editModalStudent').style.display='block'">&#9998;</button>
+                                    &emsp;
+                                    <button type="submit" class="w3-button w3-red w3-round-large" ng-click="deleteStudent(x.idno)">&#10007;</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!--Add Student modal-->
+                <div class="w3-modal" id="registrationModalStudent">
+                    <div class="w3-modal-content w3-animate-top" style="width:400px">
+                        <div class="w3-container w3-blue">
+                            <span class="w3-button w3-display-topright" onclick="document.getElementById('registrationModalStudent').style.display='none'">&times;</span>
+                            <h3>Add New Student</h3>
+                        </div>
+                        <div class="w3-container w3-padding-16">
+                                <label for = "idno">ID</label>
+                                <input type ="number" id ="idno" class = "w3-input w3-border" ng-model="idno" placeholder="Not required">
+                                <label for = "lastname">LASTNAME</label>
+                                <input type ="text" id ="lastname" class = "w3-input w3-border" ng-model="lastname">
+                                <label for = "firstname">FIRSTNAME</label>
+                                <input type ="text" id ="firstname" class = "w3-input w3-border" ng-model="firstname">
+                                <label for = "course">COURSE</label>
+                                <input type ="text" id ="course" class = "w3-input w3-border" ng-model="course">
+                                <label for = "level">LEVEL</label>
+                                <input type ="text" id ="level" class = "w3-input w3-border" ng-model="level">
+                            <br>
+                            <button class="w3-right w3-button w3-blue" ng-click="addStudent()">Add Student</button>
+                            <button class="w3-left w3-button w3-blue" ng-click="clearAllStudent()">Clear</button>
+                        </div>
+                    </div>
+                </div>
+                <!--Edit Student modal-->
+                <div class="w3-modal" id="editModalStudent">
+                    <div class="w3-modal-content w3-animate-top" style="width:400px">
+                        <div class="w3-container w3-blue">
+                            <span class="w3-button w3-display-topright" onclick="document.getElementById('editModalStudent').style.display='none'">&times;</span>
+                            <h3>Edit Student</h3>
+                        </div>
+                        <div class="w3-container w3-padding-16">
+                                <label for = "idno">ID</label>
+                                <input type ="number" name="idno" id ="idno" class = "w3-input w3-border" ng-model="idno" readonly>
+                                <label for = "lastname">LASTNAME</label>
+                                <input type ="text" id ="lastname" class = "w3-input w3-border" ng-model="lastname">
+                                <label for = "firstname">FIRSTNAME</label>
+                                <input type ="text" id ="firstname" class = "w3-input w3-border" ng-model="firstname">
+                                <label for = "course">COURSE</label>
+                                <input type ="text" id ="course" class = "w3-input w3-border" ng-model="course">
+                                <label for = "level">LEVEL</label>
+                                <input type ="text" id ="level" class = "w3-input w3-border" ng-model="level">
+                            <br>
+                            <button class="w3-right w3-button w3-blue" ng-click="updateStudent()">Update</button>
+                            <button class="w3-left w3-button w3-blue" ng-click="clearWithoutIdStudent()">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-controller="users">
+                <!--Users Table-->
+                <div id="userTable" style="display:none;">
+                    <table class="w3-table-all">
+                        <thead>
+                            <tr class="w3-blue">
+                                <th ng-repeat="h in header" class="w3-center">{{ h | uppercase }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="x in users">
+                                <td class="w3-center">{{ x.id }}</td>
+                                <td class="w3-center">{{ x.username }}</td>
+                                <td class="w3-center">{{ x.password }}</td>
+                                <td class="w3-center">
+                                    <button type="submit" class="w3-button w3-yellow w3-round-large" ng-click="showDataUser(x.id, x.username, x.password)" onclick="document.getElementById('editModalUser').style.display='block'">&#9998;</button>
+                                    &emsp;
+                                    <button type="submit" class="w3-button w3-red w3-round-large" ng-click="deleteUser(x.id)">&#10007;</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!--Add user modal-->
+                    <div class="w3-modal" id="registrationModalUser">
+                        <div class="w3-modal-content w3-animate-top" style="width:400px">
+                            <div class="w3-container w3-blue">
+                                <span class="w3-button w3-display-topright" onclick="document.getElementById('registrationModalUser').style.display='none'">&times;</span>
+                                <h3>Add New User</h3>
+                            </div>
+                            <div class="w3-container w3-padding-16">
+                                    <label for = "idno">ID</label>
+                                    <input type ="number" id ="id" class = "w3-input w3-border" ng-model="id" placeholder="Not required">
+                                    <label for = "username">USERNAME</label>
+                                    <input type ="text" id ="username" class = "w3-input w3-border" ng-model="username">
+                                    <label for = "password">PASSWORD</label>
+                                    <input type ="text" id ="password" class = "w3-input w3-border" ng-model="password">
+                                <br>
+                                <button class="w3-right w3-button w3-blue" ng-click="addUser()">Add User</button>
+                                <button class="w3-left w3-button w3-blue" ng-click="clearAllUser()">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Edit User modal-->
+                    <div class="w3-modal" id="editModalUser">
+                        <div class="w3-modal-content w3-animate-top" style="width:400px">
+                            <div class="w3-container w3-blue">
+                                <span class="w3-button w3-display-topright" onclick="document.getElementById('editModalUser').style.display='none'">&times;</span>
+                                <h3>Edit Student</h3>
+                            </div>
+                            <div class="w3-container w3-padding-16">
+                                <label for = "idno">ID</label>
+                                <input type ="number" id ="id" class = "w3-input w3-border" ng-model="id" readonly>
+                                <label for = "username">USERNAME</label>
+                                <input type ="text" id ="username" class = "w3-input w3-border" ng-model="username">
+                                <label for = "password">PASSWORD</label>
+                                <input type ="text" id ="password" class = "w3-input w3-border" ng-model="password">
+                                <br>
+                                <button class="w3-right w3-button w3-blue" ng-click="updateUser()">Update</button>
+                                <button class="w3-left w3-button w3-blue" ng-click="clearWithoutIdUser()">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script src="./assets/index.js"></script>
+    <script>
+        function showStudentTable(){
+            document.getElementById("studentTable").style.display='block';
+            document.getElementById("userTable").style.display='none';
+        }
+        function showUserTable(){
+            document.getElementById("studentTable").style.display='none';
+            document.getElementById("userTable").style.display='block';
+        }
+        function showAllTable(){
+            document.getElementById("studentTable").style.display='block';
+            document.getElementById("userTable").style.display='block';
+        }
+    </script>
+</html>
+

@@ -6,7 +6,29 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Accounts</title>
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <!-- <link rel="stylesheet" src="./assets/style.css"> -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+        <style>
+            #camera {
+            width: 350px;
+            height: 350px;
+            border: 1px solid black;
+            }
+            #webcamModal div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            }
+            #webcamModal img {
+                height: 400px;
+                width: 400px;
+            }
+            #webcamModal button {
+                display: block;
+                padding: 10px;
+                margin-top: 10px;
+            }
+        </style>
     </head>
     <body>    
         <div class = "w3-bar w3-blue">
@@ -41,6 +63,7 @@
                                 <td class="w3-center">{{ x.firstname }}</td>
                                 <td class="w3-center">{{ x.course }}</td>
                                 <td class="w3-center">{{ x.level }}</td>
+                                <td class="w3-center"><img src="/assets/images/{{x.image}}" alt="{{x.image}}" width="50" height="50"></td>
                                 <td class="w3-center">
                                     <button type="submit" class="w3-button w3-yellow w3-round-large" ng-click="showDataStudent(x.idno, x.lastname, x.firstname, x.course, x.level)" onclick="document.getElementById('editModalStudent').style.display='block'">&#9998;</button>
                                     &emsp;
@@ -58,20 +81,43 @@
                             <span class="w3-button w3-display-topright" onclick="document.getElementById('registrationModalStudent').style.display='none'">&times;</span>
                             <h3>Add New Student</h3>
                         </div>
-                        <div class="w3-container w3-padding-16">
+                        <form method="POST" action="/students" enctype="multipart/form-data" class="w3-container w3-padding-16">
                                 <label for = "idno">ID</label>
-                                <input type ="number" id ="idno" class = "w3-input w3-border" ng-model="idno" placeholder="Not required">
+                                <input type ="number" id ="idno" name="idno" class = "w3-input w3-border" ng-model="idno" placeholder="Not required">
                                 <label for = "lastname">LASTNAME</label>
-                                <input type ="text" id ="lastname" class = "w3-input w3-border" ng-model="lastname">
+                                <input type ="text" id ="lastname" name="lastname" class = "w3-input w3-border" ng-model="lastname">
                                 <label for = "firstname">FIRSTNAME</label>
-                                <input type ="text" id ="firstname" class = "w3-input w3-border" ng-model="firstname">
+                                <input type ="text" id ="firstname" name="firstname" class = "w3-input w3-border" ng-model="firstname">
                                 <label for = "course">COURSE</label>
-                                <input type ="text" id ="course" class = "w3-input w3-border" ng-model="course">
+                                <input type ="text" id ="course" name="course" class = "w3-input w3-border" ng-model="course">
                                 <label for = "level">LEVEL</label>
-                                <input type ="text" id ="level" class = "w3-input w3-border" ng-model="level">
-                            <br>
-                            <button class="w3-right w3-button w3-blue" ng-click="addStudent()">Add Student</button>
+                                <input type ="text" id ="level" name="level" class = "w3-input w3-border" ng-model="level">
+                                <label for = "image">Picture</label>
+                                <input type="file" id="file_input" name="image" ng-model="image" accept="image/png, image/jpeg, image/jpg">
+                                <br>or
+                                <input type="button" value="Webcam" onclick="document.getElementById('webcamModal').style.display='block'"><br><br>
+                            <button type="submit" class="w3-right w3-button w3-blue" ng-click="addStudent()">Add Student</button>
                             <button class="w3-left w3-button w3-blue" ng-click="clearAllStudent()">Clear</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- webcam modal -->
+                <div class="w3-modal" id="webcamModal">
+                    <div class="w3-modal-content w3-animate-top " style="width:50%">
+                        <div class="w3-container w3-blue">
+                            <span class="w3-button w3-display-topright" onclick="document.getElementById('webcamModal').style.display='none'">&times;</span>
+                            <h3>Webcam 1.0</h3>
+                        </div>
+                        <div class="w3-container w3-padding-16">
+                            <div id="camera" ></div>
+                            <button onclick="take_snapshot();document.getElementById('myImg').style.display='block';document.getElementById('loadUrl').style.display='block'">Take Snapshot</button>
+                            <br>
+                            <img id="myImg" width="350px" height="260px" style="display: none;" src="">
+                            <input id='url' type="text" style="display: none;" value="">
+                            <br>
+                            <input type="button" id="loadUrl" value="SAVE" style="display: none;" onclick="document.getElementById('webcamModal').style.display='none'" />
+                            <!-- <input id='file_input' name="image" type="file"> -->
+                            <!-- <span>status input file type: <span id="status"></span></span> -->
                         </div>
                     </div>
                 </div>
@@ -82,21 +128,23 @@
                             <span class="w3-button w3-display-topright" onclick="document.getElementById('editModalStudent').style.display='none'">&times;</span>
                             <h3>Edit Student</h3>
                         </div>
-                        <div class="w3-container w3-padding-16">
-                                <label for = "idno">ID</label>
-                                <input type ="number" name="idno" id ="idno" class = "w3-input w3-border" ng-model="idno" readonly>
-                                <label for = "lastname">LASTNAME</label>
-                                <input type ="text" id ="lastname" class = "w3-input w3-border" ng-model="lastname">
-                                <label for = "firstname">FIRSTNAME</label>
-                                <input type ="text" id ="firstname" class = "w3-input w3-border" ng-model="firstname">
-                                <label for = "course">COURSE</label>
-                                <input type ="text" id ="course" class = "w3-input w3-border" ng-model="course">
-                                <label for = "level">LEVEL</label>
-                                <input type ="text" id ="level" class = "w3-input w3-border" ng-model="level">
-                            <br>
+                        <form method="PUT" action="/students" enctype="multipart/form-data" class="w3-container w3-padding-16">
+                            <label for = "idno">ID</label>
+                            <input type ="number" name="idno" id ="idno" class = "w3-input w3-border" ng-model="idno" readonly>
+                            <label for = "lastname">LASTNAME</label>
+                            <input type ="text" id ="lastname" name="lastname" class = "w3-input w3-border" ng-model="lastname">
+                            <label for = "firstname">FIRSTNAME</label>
+                            <input type ="text" id ="firstname" name="firstname" class = "w3-input w3-border" ng-model="firstname">
+                            <label for = "course">COURSE</label>
+                            <input type ="text" id ="course" name="course" class = "w3-input w3-border" ng-model="course">
+                            <label for = "level">LEVEL</label>
+                            <input type ="text" id ="level" name="level" class = "w3-input w3-border" ng-model="level">
+                            <label for = "image">Picture</label>
+                            <input type="file" id="image" name="image" ng-model="image" accept="image/png, image/jpeg, image/jpg" required><br>                          
+                            <br><br>
                             <button class="w3-right w3-button w3-blue" ng-click="updateStudent()">Update</button>
                             <button class="w3-left w3-button w3-blue" ng-click="clearWithoutIdStudent()">Clear</button>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -166,7 +214,8 @@
             </div>
         </div>
     </body>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+    <script src="./assets/script.js"></script>
     <script src="./assets/index.js"></script>
     <script>
         function showStudentTable(){
@@ -181,6 +230,26 @@
             document.getElementById("studentTable").style.display='block';
             document.getElementById("userTable").style.display='block';
         }
+        // load webcam
+        Webcam.set({
+            width:350,
+            height:350,
+            image_format:'jpeg',
+            jpeg_quality:90
+        })
+        Webcam.attach("#camera")
+
+        function take_snapshot(){
+            Webcam.snap(function(data_uri){
+                // document.getElementById("results").innerHTML = 
+                // '<img id="hello" src="'+data_uri+'" >';
+                document.getElementById("myImg").src = data_uri;
+                document.getElementById("url").value = data_uri;
+                // document.getElementById("inputFile").src = "fileName";
+                // console.log(data_uri)
+            })
+        }
+        //end of webcam code
     </script>
 </html>
 

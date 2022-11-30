@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Taking Picture From Webcam Using webcam.js</title>
+    </head>
+    <style>
+        #camera {
+            width: 350px;
+            height: 350px;
+            border: 1px solid black;
+        }
+        div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        }
+        img {
+            height: 400px;
+            width: 400px;
+        }
+        button {
+            display: block;
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+    <body>
+        <!-- webcamera -->
+        <div id="camera"></div>
+        <button onclick="take_snapshot()">Take Snapshot</button>
+        <img id="myImg" src="">
+        <button id="button">Download</button>
+
+        <form method="POST" action="/students" enctype="multipart/form-data">
+        <h1>Load URL to input</h1>
+        <input id='url' type="text" style="display: none;" value="">
+        <input type="button" id="loadUrl" value="Load URL to input type file" />
+        <input id='file_input' name="image" type="file">
+        <span>status input file type: <span id="status"></span></span>
+        <button type="submit">Submit</button>
+        
+        <h1>Load input to preview</h1>
+        <button id="loadImage" >Load input above to preview</button>
+        <img src="" id='img-preview' alt="img-preview">
+
+        <h1>Load input file browser to preview</h1>
+        <input type="file" name="" id="file_browser">
+        <img src="" id='img-preview2' alt="preview2">
+
+        </form>
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
+    <script src="./assets/script.js"></script>
+    <script>
+        // load webcam
+Webcam.set({
+    width:350,
+    height:350,
+    image_format:'jpeg',
+    jpeg_quality:90
+})
+Webcam.attach("#camera")
+
+function take_snapshot(){
+    Webcam.snap(function(data_uri){
+        // document.getElementById("results").innerHTML = 
+        // '<img id="hello" src="'+data_uri+'" >';
+        document.getElementById("myImg").src = data_uri;
+        document.getElementById("url").value = data_uri;
+        // document.getElementById("inputFile").src = "fileName";
+        // console.log(data_uri)
+    })
+}
+
+//experiments below
+// window.onload = function download(){
+    let btnDownload = document.getElementById('button');
+    // let img = document.getElementById('img');
+    let img2 = document.getElementById('myImg');
+    // Must use FileSaver.js 2.0.2 because 2.0.3 has issues.
+    btnDownload.addEventListener('click', () => {
+    let imagePath = img2.getAttribute('src');  
+    let fileName = getFileName(imagePath) + ".jpg";
+    saveAs(imagePath, fileName);
+    console.log(btnDownload,img2,imagePath,fileName)
+    document.getElementById("image").src = data_uri;
+    });
+// }
+
+function getFileName(str) {
+    return str.substring(str.lastIndexOf('/') + -5)
+}
+//end of webcam code
+    </script>
+</html>

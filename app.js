@@ -1,16 +1,32 @@
 const express = require("express");
+const { devNull } = require("os");
 const { exit } = require("process");
 mysql = require("mysql");
 bodyparser = require("body-parser"); 
-path = require("path");
+const path = require("path");
+//const webcam = require("webcam-easy");
+
+const multer = require("multer");
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "./public/assets/images")
+    },
+    filename: (req, file, cb) => {
+        console.log(file)
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({storage: storage})
 
 var port = process.env.port || 1234; 
 var app = express();
 
-app.use(express.static('./public',{index:'login.html'}))
+app.use(express.static('./public',{index:'login2.html'}))
 app.use(bodyparser.urlencoded({"extended":true}))
 app.use(bodyparser.json())
-
+///
+///
 
 var db = mysql.createConnection({
     host: "localhost",
@@ -27,6 +43,11 @@ db.connect(err=>{
 })
 
 app.get("/start",(req,res) => res.sendFile(`${__dirname}/public/index.html`))
+app.get("/main",(req,res) => res.sendFile(`${__dirname}/public/login2.html`))
+
+var server = app.listen(port, () => {
+    require("dns").lookup(require("os").hostname(), (err,addr,fam) => console.log(`Listening at port: ${port} \nhttp://${addr}:${port}`))
+})
 
 //students CRUD database
 // app.get("/students",(req,res) => {
@@ -36,43 +57,78 @@ app.get("/start",(req,res) => res.sendFile(`${__dirname}/public/index.html`))
 //         res.json({results})
 //     })
 // });
-var server = app.listen(port, () => {
-    require("dns").lookup(require("os").hostname(), (err,addr,fam) => console.log(`Listening at port: ${port} \nhttp://${addr}:${port}`))
-})
+
 
 
 //api
+app.post("/login",(req,res)=>{
+    var data=req.body;
+    var username=data.username;
+    var password=data.password;
+    var sql = "select * from user where `username`='"+username+"' && `password`='"+password+"'";
+    db.query(sql, (err,results,fields)=>{
+        if(err) return res.status(500).json("Login Failed.");
+        if(results.length>0) {
+            res.redirect("/start")
+            console.log(username,password,"Login Successful",results)
+        }else{
+            res.redirect("/main?message=Login Failed")
+            console.log(username,password,"Login Failed",results)
+        }
+    })
+})
+
+//for image
+// app.post("/upload", upload.single("image"), (req,res) =>{
+//     var { path } = req.file;
+//     var sql = `insert into student (image) values ('${path.slice(21,path.length)}')`;
+//     db.query(sql,function(err,results,fields){
+//         if (err) res.status(500).json(err);
+//         res.json({"message":"Image uploaded!"});
+//         res.send("Image uploaded");
+//         console.log(path);
+//     })
+    
+// })
+
+//
 app.get("/students",(req,res) => {
     var sql = "select * from student"
     db.query(sql, (err,results) => err ?  res.status(500).json(err) : res.json(results))
 })
 
-app.post("/students",(req,res) => {
-    var students = req.body;
-    var sql = `insert into student (idno,lastname,firstname,course,level) values ('${students.idno}','${students.lastname}',
-            '${students.firstname}','${students.course}','${students.level}')`;
+app.post("/students",upload.single("image"),(req,res) => {
+    var students = req.body; 
+    var { path } = req.file;
+    var sql = `insert into student (idno,lastname,firstname,course,level,image) values ('${students.idno}','${students.lastname}',
+            '${students.firstname}','${students.course}','${students.level}','${path.slice(21,path.length)}')`;
     db.query(sql,function(err,results,fields){
         if (err) res.status(500).json(err);
-        res.json({"message":"Student added!"})
+        res.redirect("/start");
+        //res.json({"message":"Student added!"});
+        console.log(students,path)
     })
 });
 
 app.delete("/students/",(req,res) => {
     var students = req.body;
+    
     var sql = `delete from student where idno=${students.idno}`
     db.query(sql,function(err,results,fields){
         if (err) res.status(500).json(err);
-        res.json({"message":"Student delete!"})
+        res.json({"message":"Student delete!"});
     })
 });
 
-app.put("/students",(req,res) => {
+app.put("/students",upload.single("image"),(req,res) => {
     var students = req.body;
+    var { path } = req.file;
     var sql = `update student set idno='${students.idno}',lastname='${students.lastname}',firstname='${students.firstname}',
-            course='${students.course}', level='${students.level}' where idno=${students.idno}`;
+            course='${students.course}', level='${students.level}', image='${path.slice(21,path.length)}' where idno=${students.idno}`;
     db.query(sql,function(err,results,fields){
         if (err) res.status(500).json(err);
-        res.json({"message":"Student updated!"})
+        res.redirect("/start");
+        //res.json({"message":"Student updated!"})
     })
 })
 

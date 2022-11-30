@@ -2,7 +2,7 @@
     let app = angular.module("app",[]);
     
     app.controller("students",function($scope,$http) {
-        $scope.header=['idno','lastname','firstname','course','level','action'];
+        $scope.header=['idno','lastname','firstname','course','level', 'Image','action'];
         //Show Students
         $http({
             method:"GET",
@@ -23,7 +23,8 @@
                     lastname: $scope.lastname,
                     firstname: $scope.firstname,
                     course: $scope.course,
-                    level: $scope.level
+                    level: $scope.level,
+                    image: $scope.image
                 }
             }).then(() => location.reload())
         }
@@ -60,7 +61,8 @@
                     lastname: $scope.lastname,
                     firstname: $scope.firstname,
                     course: $scope.course,
-                    level: $scope.level
+                    level: $scope.level,
+                    image: $scope.image
                 }
             }).then(()=>(location.reload()))
         }

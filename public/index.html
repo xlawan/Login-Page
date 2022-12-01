@@ -10,8 +10,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
         <style>
             #camera {
-            width: 350px;
-            height: 350px;
+            width: 160px;
+            height: 120px;
             border: 1px solid black;
             }
             #webcamModal div {
@@ -20,8 +20,8 @@
             align-items: center;
             }
             #webcamModal img {
-                height: 400px;
-                width: 400px;
+                height: 120px;
+                width: 160px;
             }
             #webcamModal button {
                 display: block;
@@ -95,14 +95,49 @@
                                 <label for = "image">Picture</label>
                                 <input type="file" id="file_input" name="image" ng-model="image" accept="image/png, image/jpeg, image/jpg">
                                 <br>or
-                                <input type="button" value="Webcam" onclick="document.getElementById('webcamModal').style.display='block'"><br><br>
+                                <input type="button" value="Webcam" onclick="document.getElementById('webcamSection').style.display='block'"><br><br>
+                                <div id="webcamSection" style="display: none;" class="">
+                                    <div id="camera" ></div>
+                                    <img id="myImg" style="display: none;" src="">
+                                    <input
+                                        type="button" 
+                                        id="takeSnapshot"
+                                        onclick="take_snapshot();document.getElementById('myImg').style.display='block';
+                                            document.getElementById('loadUrl').style.display='block';
+                                            document.getElementById('camera').style.display='none';
+                                            document.getElementById('retakeButton').style.display='block';
+                                            document.getElementById('takeSnapshot').style.display='none'"
+                                        value="Take Snapshot" />
+                                    
+                                    <input
+                                        type="button" 
+                                        id="retakeButton" 
+                                        style="display: none;" 
+                                        onclick="document.getElementById('takeSnapshot').style.display='block'; 
+                                            document.getElementById('camera').style.display='block';
+                                            document.getElementById('myImg').style.display='none';
+                                            document.getElementById('retakeButton').style.display='none';
+                                            document.getElementById('loadUrl').style.display='none';"
+                                        value="Retake">
+                                    
+                                    
+                                    <input type="button" id="loadUrl" value="SAVE" style="display: none;" onclick="document.getElementById('webcamSection').style.display='none'" />
+                                    <br>
+                                    <!-- <img id="myImg" style="display: none;" src=""> -->
+                                    <input id='url' type="text" style="display: none;" value="">
+                                    <br>
+                                    <input type="button" id="loadUrl" value="SAVE" style="display: none;" onclick="document.getElementById('webcamModal').style.display='none'" />
+                                    <!-- <input id='file_input' name="image" type="file"> -->
+                                    <!-- <span>status input file type: <span id="status"></span></span> -->
+                                </div>
+        
                             <button type="submit" class="w3-right w3-button w3-blue" ng-click="addStudent()">Add Student</button>
-                            <button class="w3-left w3-button w3-blue" ng-click="clearAllStudent()">Clear</button>
+                            <input type="button" class="w3-left w3-button w3-blue" value="Clear" ng-click="clearAllStudent()"></button>
                         </form>
                     </div>
                 </div>
                 <!-- webcam modal -->
-                <div class="w3-modal" id="webcamModal">
+                <!-- <div class="w3-modal" id="webcamModal">
                     <div class="w3-modal-content w3-animate-top " style="width:50%">
                         <div class="w3-container w3-blue">
                             <span class="w3-button w3-display-topright" onclick="document.getElementById('webcamModal').style.display='none'">&times;</span>
@@ -110,17 +145,40 @@
                         </div>
                         <div class="w3-container w3-padding-16">
                             <div id="camera" ></div>
-                            <button onclick="take_snapshot();document.getElementById('myImg').style.display='block';document.getElementById('loadUrl').style.display='block'">Take Snapshot</button>
+                            <img id="myImg" style="display: none;" src="">
+                            <button 
+                                id="takeSnapshot"
+                                onclick="take_snapshot();document.getElementById('myImg').style.display='block';
+                                    document.getElementById('loadUrl').style.display='block';
+                                    document.getElementById('camera').style.display='none';
+                                    document.getElementById('retakeButton').style.display='block';
+                                    document.getElementById('takeSnapshot').style.display='none'">
+                                Take Snapshot
+                            </button>
+                            <button 
+                                id="retakeButton" 
+                                style="display: none;" 
+                                onclick="document.getElementById('takeSnapshot').style.display='block'; 
+                                    document.getElementById('camera').style.display='block';
+                                    document.getElementById('myImg').style.display='none';
+                                    document.getElementById('retakeButton').style.display='none';
+                                    document.getElementById('loadUrl').style.display='none';
+                                    ">
+                                Retake
+                            </button>
                             <br>
-                            <img id="myImg" width="350px" height="260px" style="display: none;" src="">
+                            <input type="button" id="loadUrl" value="SAVE" style="display: none;" onclick="document.getElementById('webcamModal').style.display='none'" />
+                            <br> -->
+                            <!-- <img id="myImg" style="display: none;" src="">
                             <input id='url' type="text" style="display: none;" value="">
                             <br>
                             <input type="button" id="loadUrl" value="SAVE" style="display: none;" onclick="document.getElementById('webcamModal').style.display='none'" />
-                            <!-- <input id='file_input' name="image" type="file"> -->
-                            <!-- <span>status input file type: <span id="status"></span></span> -->
+                            <input id='file_input' name="image" type="file">
+                            <span>status input file type: <span id="status"></span></span>
                         </div>
                     </div>
-                </div>
+                </div> -->
+
                 <!--Edit Student modal-->
                 <div class="w3-modal" id="editModalStudent">
                     <div class="w3-modal-content w3-animate-top" style="width:400px">
@@ -128,7 +186,8 @@
                             <span class="w3-button w3-display-topright" onclick="document.getElementById('editModalStudent').style.display='none'">&times;</span>
                             <h3>Edit Student</h3>
                         </div>
-                        <form method="PUT" action="/students" enctype="multipart/form-data" class="w3-container w3-padding-16">
+                        <!-- <form method="PUT" action="/students" enctype="multipart/form-data" class="w3-container w3-padding-16"> -->
+                        <div class="w3-container w3-padding-16">
                             <label for = "idno">ID</label>
                             <input type ="number" name="idno" id ="idno" class = "w3-input w3-border" ng-model="idno" readonly>
                             <label for = "lastname">LASTNAME</label>
@@ -139,12 +198,13 @@
                             <input type ="text" id ="course" name="course" class = "w3-input w3-border" ng-model="course">
                             <label for = "level">LEVEL</label>
                             <input type ="text" id ="level" name="level" class = "w3-input w3-border" ng-model="level">
-                            <label for = "image">Picture</label>
-                            <input type="file" id="image" name="image" ng-model="image" accept="image/png, image/jpeg, image/jpg" required><br>                          
+                            <!-- <label for = "image">Picture</label>
+                            <input type="file" id="image" name="image" ng-model="image" accept="image/png, image/jpeg, image/jpg" required><br>                           -->
                             <br><br>
                             <button class="w3-right w3-button w3-blue" ng-click="updateStudent()">Update</button>
                             <button class="w3-left w3-button w3-blue" ng-click="clearWithoutIdStudent()">Clear</button>
-                        </form>
+                        </div>
+                        <!-- </form> -->
                     </div>
                 </div>
             </div>
@@ -232,8 +292,8 @@
         }
         // load webcam
         Webcam.set({
-            width:350,
-            height:350,
+            width:160,
+            height:120,
             image_format:'jpeg',
             jpeg_quality:90
         })

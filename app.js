@@ -120,15 +120,15 @@ app.delete("/students/",(req,res) => {
     })
 });
 
-app.put("/students",upload.single("image"),(req,res) => {
+app.put("/students",(req,res) => {
     var students = req.body;
-    var { path } = req.file;
+    //var { path } = req.file;
     var sql = `update student set idno='${students.idno}',lastname='${students.lastname}',firstname='${students.firstname}',
-            course='${students.course}', level='${students.level}', image='${path.slice(21,path.length)}' where idno=${students.idno}`;
+            course='${students.course}', level='${students.level}' where idno=${students.idno}`;
     db.query(sql,function(err,results,fields){
         if (err) res.status(500).json(err);
-        res.redirect("/start");
-        //res.json({"message":"Student updated!"})
+        //res.redirect("/start");
+        res.json({"message":"Student updated!"})
     })
 })
 
